@@ -21,6 +21,8 @@
  */
 #pragma once
 
+// #define DUAL_EXTRUDER_MODE
+
 /**
  * Configuration.h
  *
@@ -239,7 +241,11 @@
 
 // This defines the number of extruders
 // :[0, 1, 2, 3, 4, 5, 6, 7, 8]
-#define EXTRUDERS 2
+#if ENABLED(DUAL_EXTRUDER_MODE)
+  #define EXTRUDERS 2
+#else
+  #define EXTRUDERS 1
+#endif
 
 // Generally expected filament diameter (1.75, 2.85, 3.0, ...). Used for Volumetric, Filament Width Sensor, etc.
 #define DEFAULT_NOMINAL_FILAMENT_DIA 1.75
@@ -397,9 +403,15 @@
 // Offset of the extruders (uncomment if using more than one and relying on firmware to position when changing).
 // The offset has to be X=0, Y=0 for the extruder 0 hotend (default extruder).
 // For the other hotends it is their distance from the extruder 0 hotend.
-#define HOTEND_OFFSET_X { 0.0, 20.00 } // (mm) relative X-offset for each nozzle
-#define HOTEND_OFFSET_Y { 0.0, 0.00 }  // (mm) relative Y-offset for each nozzle
-#define HOTEND_OFFSET_Z { 0.0, 0.00 }  // (mm) relative Z-offset for each nozzle
+#if ENABLED(DUAL_EXTRUDER_MODE)
+  #define HOTEND_OFFSET_X { 0.0, 20.00 } // (mm) relative X-offset for each nozzle
+  #define HOTEND_OFFSET_Y { 0.0, 0.00 }  // (mm) relative Y-offset for each nozzle
+  #define HOTEND_OFFSET_Z { 0.0, 0.00 }  // (mm) relative Z-offset for each nozzle
+#else
+  #define HOTEND_OFFSET_X { 0.0, 0.00 } // (mm) relative X-offset for each nozzle
+  #define HOTEND_OFFSET_Y { 0.0, 0.00 }  // (mm) relative Y-offset for each nozzle
+  #define HOTEND_OFFSET_Z { 0.0, 0.00 }  // (mm) relative Z-offset for each nozzle
+#endif
 
 // @section machine
 
@@ -544,7 +556,11 @@
  *
  */
 #define TEMP_SENSOR_0 13
-#define TEMP_SENSOR_1 13
+#if ENABLED(DUAL_EXTRUDER_MODE)
+  #define TEMP_SENSOR_1 13
+#else
+  #define TEMP_SENSOR_1 0
+#endif
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_3 0
 #define TEMP_SENSOR_4 0
@@ -1015,7 +1031,11 @@
  * Override with M92
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 101, 101 }
+#if ENABLED(DUAL_EXTRUDER_MODE)
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 101, 101 }
+#else
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 101 }
+#endif
 
 /**
  * Default Max Feed Rate (linear=mm/s, rotational=°/s)
@@ -1281,7 +1301,11 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { 57, -24, -1.75 }
+#if ENABLED(DUAL_EXTRUDER_MODE)
+  #define NOZZLE_TO_PROBE_OFFSET { 57, -24, 0 }
+#else
+  #define NOZZLE_TO_PROBE_OFFSET { -50, -12, 0 }
+#endif
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
